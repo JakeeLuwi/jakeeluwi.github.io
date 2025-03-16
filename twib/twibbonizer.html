@@ -16,7 +16,7 @@
         <label
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           for="image"
-          >Upload file</label
+          >Choose image file</label
         >
         <input
           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
@@ -73,10 +73,10 @@
       data-modal-backdrop="static"
       tabindex="-1"
       aria-hidden="true"
-      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full py-3"
+      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full py-1"
     >
       <div
-        class="relative p-4 w-full max-w-2xl max-h-full xl:min-w-xl"
+        class="relative p-4 w-full sm:w-auto max-w-lg md:max-w-2xl xl:max-w-4xl max-h-full"
       >
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
@@ -176,7 +176,7 @@
               </div>
               <img src="" class="pt-3 w-full max-h-1/6" id="modalOutputImage" />
             </div>
-          </div>
+        </div>
           <!-- Modal footer -->
           <div
             class="flex justify-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600"
@@ -290,9 +290,8 @@
       window.addEventListener("load", function () {
         // get data from pastebin
         const urlParams = new URLSearchParams(window.location.search);
-        const pastebinLink = `https://cors-anywhere.herokuapp.com/https://pastebin.com/raw/${urlParams.get("id")}`;
 
-        fetch(pastebinLink)
+        fetch(urlParams.get("link"))
           .then((response) => response.json())
           .then((data) => {
             //Handle the image
