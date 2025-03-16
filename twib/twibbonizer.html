@@ -290,7 +290,9 @@
       window.addEventListener("load", function () {
         // get data from pastebin
         const urlParams = new URLSearchParams(window.location.search);
-        const pastebinLink = `https://pastebin.com/raw/${urlParams.get("id")}`;
+        const pastebinLink = `https://cors-anywhere.herokuapp.com/https://pastebin.com/raw/${urlParams.get("id")}`;
+
+        console.log(pastebinLink);
 
         fetch(pastebinLink)
           .then((response) => response.json())
