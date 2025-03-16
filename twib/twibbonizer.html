@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <title>Twibbonizer Pre-release</title>
+  </head>
+  <body class="bg-stone-900">
+    <div class="flex mt-4 justify-center">
+      <div class="max-w-screen-xl md:min-w-md xl:min-w-xl mx-3 items-center">
+        <label
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          for="image"
+          >Upload file</label
+        >
+        <input
+          class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+          id="image"
+          type="file"
+          accept="image/png, image/jpeg"
+        />
+        <div class="output-container pt-3">
+          <canvas id="outputCanvas" class="hidden"></canvas>
+          <img src="" class="w-full max-h-1/6" id="outputImage" />
+        </div>
+
+        <div id="imageProps" class="hidden">
+          <div id="slider-container" class="pt-3">
+            <div class="flex justify-between">
+              <label
+                for="scaleSlider"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Scale Image</label
+              >
+              <span
+                id="scaleValue"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >1.0x</span
+              >
+            </div>
+            <input
+              id="scaleSlider"
+              type="range"
+              min="0.5"
+              max="2.5"
+              step="0.1"
+              value="1"
+              class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg dark:bg-gray-700"
+            />
+          </div>
+
+          <div class="flex w-full justify-center pt-3">
+            <button
+              type="button"
+              data-modal-target="static-modal"
+              data-modal-toggle="static-modal"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Main modal -->
+    <div
+      id="static-modal"
+      data-modal-backdrop="static"
+      tabindex="-1"
+      aria-hidden="true"
+      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    >
+      <div
+        class="relative p-4 w-full max-w-2xl max-h-full xl:min-w-xl min-w-md"
+      >
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+          <!-- Modal header -->
+          <div
+            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200"
+          >
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              Image Twibbonized
+            </h3>
+            <button
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              data-modal-hide="static-modal"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <!-- Modal body -->
+          <div class="p-4 md:p-5 space-y-4">
+            <div class="w-full max-w-lg">
+              <div class="mb-2 flex justify-between items-center">
+                <p
+                  class="text-sm font-medium text-gray-900 dark:text-white self-center"
+                >
+                  Caption:
+                </p>
+                <button
+                  data-copy-to-clipboard-target="code-block"
+                  data-copy-to-clipboard-content-type="innerHTML"
+                  data-copy-to-clipboard-html-entities="true"
+                  class="text-gray-900 dark:text-gray-400 m-0.5 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-2.5 inline-flex items-center justify-center bg-white border-gray-200 border h-8"
+                >
+                  <span id="default-message">
+                    <span class="inline-flex items-center">
+                      <svg
+                        class="w-3 h-3 me-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 18 20"
+                      >
+                        <path
+                          d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"
+                        />
+                      </svg>
+                      <span class="text-xs font-semibold">Copy</span>
+                    </span>
+                  </span>
+                  <span id="success-message" class="hidden">
+                    <span class="inline-flex items-center">
+                      <svg
+                        class="w-3 h-3 text-blue-700 dark:text-blue-500 me-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 16 12"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M1 5.917 5.724 10.5 15 1.5"
+                        />
+                      </svg>
+                      <span
+                        class="text-xs font-semibold text-blue-700 dark:text-blue-500"
+                        >Copied</span
+                      >
+                    </span>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="relative bg-gray-50 rounded-lg dark:bg-gray-900 p-4 h-32"
+              >
+                <div class="overflow-scroll max-h-full min-h-full">
+                  <pre><code id="code-block" class="text-sm text-black dark:text-gray-200 whitespace-pre">
+          </code></pre>
+                </div>
+              </div>
+              <img src="" class="pt-3 w-full max-h-1/6" id="modalOutputImage" />
+            </div>
+          </div>
+          <!-- Modal footer -->
+          <div
+            class="flex justify-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600"
+          >
+            <button
+              id="saveImage"
+              type="button"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+    <script>
+      let borderImage = new Image();
+      let backgroundImage = new Image();
+      let outputCanvas = document.getElementById("outputCanvas");
+      let outputImage = document.getElementById("outputImage");
+      let modalOutputImage = document.getElementById("modalOutputImage");
+      let saveButton = document.getElementById("saveImage");
+      let scaleSlider = document.getElementById("scaleSlider");
+      let scaleValue = document.getElementById("scaleValue");
+      let imageProps = document.getElementById("imageProps");
+
+      let borderImageLoaded = false;
+      let backgroundImageLoaded = false;
+
+      borderImage.onload = function () {
+        borderImageLoaded = true;
+        if (backgroundImageLoaded) {
+          updateMergedImage();
+        }
+      };
+
+      // Function to update the merged image
+      function updateMergedImage() {
+        if (!borderImageLoaded || !backgroundImageLoaded) return;
+
+        imageProps.classList.remove("hidden");
+
+        // Create a canvas to draw the merged image
+        outputCanvas.width = borderImage.naturalWidth;
+        outputCanvas.height = borderImage.naturalHeight;
+        let ctx = outputCanvas.getContext("2d");
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+
+        // Draw the background image (scaled)
+        let scale = parseFloat(scaleSlider.value);
+        let bgWidth = backgroundImage.naturalWidth * scale;
+        let bgHeight = backgroundImage.naturalHeight * scale;
+        let bgX = (outputCanvas.width - bgWidth) / 2;
+        let bgY = (outputCanvas.height - bgHeight) / 2;
+        ctx.drawImage(backgroundImage, bgX, bgY, bgWidth, bgHeight);
+
+        // Draw the border image on top
+        ctx.drawImage(
+          borderImage,
+          0,
+          0,
+          outputCanvas.width,
+          outputCanvas.height
+        );
+
+        // Update the output image
+        let dataUrl = outputCanvas.toDataURL();
+        outputImage.src = dataUrl;
+        modalOutputImage.src = dataUrl;
+      }
+
+      // Handle background image upload
+      document
+        .getElementById("image")
+        .addEventListener("change", function (event) {
+          let file = event.target.files[0];
+          if (file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+              backgroundImage.src = e.target.result;
+              backgroundImage.onload = function () {
+                backgroundImageLoaded = true;
+                updateMergedImage();
+              };
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+      // Handle slider changes
+      scaleSlider.addEventListener("input", function () {
+        // Update the scale value display
+        scaleValue.textContent = `${parseFloat(scaleSlider.value).toFixed(1)}x`;
+        updateMergedImage();
+      });
+
+      // Handle save image
+      document
+        .getElementById("saveImage")
+        .addEventListener("click", function () {
+          let link = document.createElement("a");
+          link.download = "merged-image.png";
+          link.href = outputCanvas.toDataURL();
+          link.click();
+        });
+
+      window.addEventListener("load", function () {
+        // get data from pastebin
+        const urlParams = new URLSearchParams(window.location.search);
+        const pastebinLink = `https://pastebin.com/raw/${urlParams.get("id")}`;
+
+        fetch(pastebinLink)
+          .then((response) => response.json())
+          .then((data) => {
+            //Handle the image
+            borderImage.src = data.borderImg;
+            borderImage.crossOrigin = "anonymous"; // Allow cross-origin access
+
+            //Handle caption
+            document.getElementById("code-block").innerHTML = data.caption;
+          })
+          .catch((error) =>
+            console.error("Error fetching or parsing data:", error)
+          );
+
+        // allow copy of caption
+        const clipboard = FlowbiteInstances.getInstance(
+          "CopyClipboard",
+          "code-block"
+        );
+
+        const $defaultMessage = document.getElementById("default-message");
+        const $successMessage = document.getElementById("success-message");
+
+        clipboard.updateOnCopyCallback((clipboard) => {
+          showSuccess();
+
+          // reset to default state
+          setTimeout(() => {
+            resetToDefault();
+          }, 2000);
+        });
+
+        const showSuccess = () => {
+          $defaultMessage.classList.add("hidden");
+          $successMessage.classList.remove("hidden");
+        };
+
+        const resetToDefault = () => {
+          $defaultMessage.classList.remove("hidden");
+          $successMessage.classList.add("hidden");
+        };
+      });
+    </script>
+  </body>
+</html>
